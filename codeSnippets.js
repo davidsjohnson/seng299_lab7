@@ -1,5 +1,6 @@
-//First App Code (Step 6)
+// #####  SIMPLE ANGULAR APP  #####
 
+// STEP 2
 angular.module('userApp', [])
 
 .controller('mainController', function(){
@@ -9,18 +10,26 @@ angular.module('userApp', [])
 	// basic variable to display
 	vm.message ="SENG 299 Angular Tutorial"
 
-		vm.students = [
+	// a list of students that will be displayed on the home page
+	vm.students = [
 		{first: "David", last: "Johnson"},
 		{first: "Ernest", last: "Aaron"}
 	];
 });
 
 
-// Declare app (Step 8)
-<body class="container" ng-app="userApp" ng-controller="mainController as main">
+// STEP 7
+//  Add this code above the <h1> in main
+<!-- form to update the message variable using ng-model -->
+<div class="form-group">
+    <label>Message</label>
+    <input type="text" class="form-control" ng-model="main.message">
+</div>
 
 
-// Student List with Repeat (step 9)
+
+// STEP 8
+// Add this below the <h1> in the jumbotron div)
 <!-- display the list using ng-repeat -->
 <h2>Student List:</h2>
 <table class="table table-bordered">
@@ -39,15 +48,8 @@ angular.module('userApp', [])
 </table>
 
 
-// step 10
-<!-- form to update the message variable using ng-model -->
-<div class="form-group">
-    <label>Message</label>
-    <input type="text" class="form-control" ng-model="main.message">
-</div>
 
-
-// Step 11 (Add below existing list)
+// STEP 9 (Add below existing list in mainController)
 
 // information that comes from our form
 vm.studentData = {};
@@ -77,7 +79,9 @@ vm.addStudent = function() {
 
 
 
- // app.routes.js step13
+// #####  MEAN STACK ANGULAR APP  #####
+
+ // STEP 1
 
  angular.module('app.routes', ['ngRoute'])
 
@@ -93,12 +97,13 @@ vm.addStudent = function() {
 		controllerAs: 'main'
 	});
 
+	// Added to remove the # from URLs
 	$locationProvider.html5Mode(true);
 });
 
 
 
-// Step 21
+// STEP 3
 angular.module('userService', [])
 
 .factory('User', function($http) {
@@ -108,6 +113,8 @@ angular.module('userService', [])
 
 	// get a single user
 	userFactory.get = function(id) {
+		// since this call requires a user ID we'll add the id to
+		// the end of the URL
 		return $http.get('/api/users/' + id);
 	};
 
@@ -117,6 +124,8 @@ angular.module('userService', [])
 	};
 
 	userFactory.create = function(userData){
+		// since this is a post method we need to include userData
+		// from our form
 		return $http.post('/api/users', userData)	
 	};
 	
@@ -125,7 +134,7 @@ angular.module('userService', [])
 });
 
 
-//step 29 user Controller.
+//STEP 6 - User Controller.
 angular.module('userCtrl', ['userService'])
 
 .controller('userController', function(User) {
@@ -149,9 +158,7 @@ angular.module('userCtrl', ['userService'])
 })
 
 
-// Step 35
-//add create user controller
-// controller applied to user creation page
+// STEP 7 - add create user controller
 .controller('userCreateController', function(User) {
 	
 	var vm = this;
@@ -177,19 +184,12 @@ angular.module('userCtrl', ['userService'])
 
 });
 
-//add a new edit user controller
-	
-	// get the user data for the user you want to edit
-	// $routeParams is the way we grab data from the URL
-	User.get($routeParams.user_id)
-		.success(function(data) {
-			vm.userData = data;
-		});
 
+// STEP 8 - add function to delete user
+// this should be added to the userController since
+// deleting a user will occur from the all Users view
 
-// add function to delete user
-
-	// function to delete a user
+	// function to delete a user 
 	vm.deleteUser = function(id) {
 		vm.processing = true;
 
@@ -207,3 +207,28 @@ angular.module('userCtrl', ['userService'])
 
 			});
 	};
+
+
+// STEP 8 HTML - delete button
+// add this to the last cell of the user table
+<a href="#" ng-click="user.deleteUser(person._id)" class="btn btn-primary">Delete</a>
+
+// STEP 9 - Edit User
+
+//add a new edit user controller
+	
+	// get the user data for the user you want to edit
+	// $routeParams is the way we grab data from the URL
+	User.get($routeParams.user_id)
+		.success(function(data) {
+			vm.userData = data;
+		});
+
+
+// add this to your routes
+	// page to edit a user
+	.when('/users/:user_id', {
+		templateUrl: 'app/views/pages/users/single.html',
+		controller: 'userEditController',
+		_controllerAs: 'user'
+	});
